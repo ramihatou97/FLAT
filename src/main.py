@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
 from .core.database import db_manager
-from .api import chapters, search, synthesis, health
+from .api import chapters, search, literature, workflow, research, health
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,7 +47,9 @@ app.add_middleware(
 # Include routers
 app.include_router(chapters.router, prefix="/api/chapters", tags=["chapters"])
 app.include_router(search.router, prefix="/api/search", tags=["search"])
-app.include_router(synthesis.router, prefix="/api/synthesis", tags=["synthesis"])
+app.include_router(literature.router, prefix="/api/literature", tags=["literature"])
+app.include_router(workflow.router, prefix="/api/workflow", tags=["workflow"])
+app.include_router(research.router, prefix="/api/research", tags=["research"])
 app.include_router(health.router, prefix="/api/health", tags=["health"])
 
 @app.get("/")
