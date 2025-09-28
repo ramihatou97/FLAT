@@ -18,7 +18,7 @@ class Chapter(Base):
     summary = Column(Text, nullable=True)
     specialty = Column(String(100), nullable=False, default="neurosurgery")
     status = Column(String(50), nullable=False, default="draft")
-    metadata = Column(JSON, nullable=True)
+    chapter_metadata = Column(JSON, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -31,7 +31,7 @@ class Chapter(Base):
             "summary": self.summary,
             "specialty": self.specialty,
             "status": self.status,
-            "metadata": self.metadata,
+            "metadata": self.chapter_metadata,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

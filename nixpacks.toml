@@ -9,7 +9,7 @@ PYTHONDONTWRITEBYTECODE = "1"
 PIP_NO_CACHE_DIR = "1"
 PIP_DISABLE_PIP_VERSION_CHECK = "1"
 
-[phases.build]
+[phases.setup]
 # Install system dependencies for AI/ML libraries
 aptPackages = [
     "build-essential",
@@ -23,13 +23,13 @@ aptPackages = [
 [phases.install]
 # Install Python dependencies with AI optimizations
 cmds = [
-    "pip install --upgrade pip setuptools wheel",
-    "pip install -r requirements.txt"
+    "python3 -m pip install --upgrade pip setuptools wheel",
+    "python3 -m pip install -r requirements-railway.txt"
 ]
 
 [start]
 # Start the medical platform
-cmd = "python simple_main.py"
+cmd = "python3 simple_main.py"
 
 [env]
 # Production environment settings

@@ -108,7 +108,7 @@ class MultiAIManager:
                 "temperature": temperature
             }
 
-                async with session.post(
+            async with session.post(
                     "https://api.openai.com/v1/chat/completions",
                     headers=headers,
                     json=payload

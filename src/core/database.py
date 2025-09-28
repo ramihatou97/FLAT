@@ -69,3 +69,9 @@ class UnifiedDatabaseManager:
 
 # Global instance
 db_manager = UnifiedDatabaseManager()
+
+# Convenience function for backward compatibility
+async def get_async_session():
+    """Get async database session"""
+    async with db_manager.get_session() as session:
+        yield session

@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     secret_key: str = "dev_secret_key_change_in_production"
 
     # Database
-    database_url: str = "postgresql://medical_user:medical_password@database:5432/medical_platform"
+    database_url: str = "postgresql://medical_user:medical_password@localhost:5432/medical_platform"
     database_pool_size: int = 10
     db_echo: bool = False
 

@@ -43,9 +43,8 @@ docker-compose up -d
 3. **Manual Setup** (alternative)
 ```bash
 # Backend
-cd medical_platform_v3
 pip install -r requirements.txt
-python -m uvicorn main:app --reload
+python simple_main.py
 
 # Frontend
 cd frontend
@@ -60,11 +59,11 @@ npm start
 
 ## Architecture
 
-### Backend (`/medical_platform_v3/`)
+### Backend (Root Directory)
 - **FastAPI** - Modern Python web framework
 - **PostgreSQL** - Relational database with medical models
 - **SQLAlchemy** - ORM for database operations
-- **AI Integration** - OpenAI GPT-4 for content generation
+- **AI Integration** - Multi-provider AI support (OpenAI, Claude, Gemini, Perplexity)
 
 ### Frontend (`/frontend/`)
 - **React 18** - Modern frontend framework
@@ -134,27 +133,29 @@ POST /api/ai/generate
 
 ```
 koo/
-├── medical_platform_v3/     # Main backend application
+├── src/                   # Main backend application
+│   ├── api/              # API endpoints
+│   ├── core/             # Core configurations
+│   ├── domain/           # Domain models
+│   └── services/         # Business logic
+├── frontend/             # React frontend
 │   ├── src/
-│   │   ├── api/            # API endpoints
-│   │   ├── core/           # Core configurations
-│   │   ├── domain/         # Domain models
-│   │   └── services/       # Business logic
-│   └── requirements.txt
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   └── services/       # API services
+│   │   ├── components/   # React components
+│   │   └── services/     # API services
 │   └── package.json
-├── database/              # Database models and migrations
-└── docker-compose.yml     # Container orchestration
+├── docs/                 # Documentation
+├── web/                  # Web interfaces
+├── scripts/              # Utility scripts
+├── docker/               # Docker configurations
+├── requirements/         # Python dependencies
+├── requirements.txt      # Main requirements file
+└── simple_main.py        # Application entry point
 ```
 
 ### Running Tests
 
 ```bash
 # Backend tests
-cd medical_platform_v3
 pytest
 
 # Frontend tests
@@ -165,9 +166,9 @@ npm test
 ### Adding New Features
 
 1. **Backend Changes**
-   - Add new API endpoints in `medical_platform_v3/src/api/`
-   - Implement business logic in `medical_platform_v3/src/services/`
-   - Add database models in `database/neurosurgical_models.py`
+   - Add new API endpoints in `src/api/`
+   - Implement business logic in `src/services/`
+   - Add database models in `src/domain/`
 
 2. **Frontend Changes**
    - Create components in `frontend/src/components/`
@@ -176,22 +177,24 @@ npm test
 
 ## Deployment
 
-### Production Deployment
+### Quick Deployment
 
-1. **Build Docker Images**
+For detailed deployment instructions, see [DEPLOYMENT_GUIDE.md](./docs/DEPLOYMENT_GUIDE.md).
+
+1. **Using Docker**
 ```bash
-docker-compose -f docker-compose.prod.yml build
+docker-compose -f docker/docker-compose.prod.yml up -d
 ```
 
-2. **Deploy to Production**
+2. **Manual Deployment**
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+pip install -r requirements.txt
+python simple_main.py
 ```
 
-3. **Environment Setup**
-   - Configure production database
-   - Set up SSL certificates
-   - Configure monitoring and logging
+3. **Railway Deployment**
+   - Connected directly via railway.json configuration
+   - Environment variables configured automatically
 
 ### Monitoring
 
@@ -222,7 +225,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 For issues and questions:
 - Check the [API Documentation](http://localhost:8000/docs)
-- Review the [Technical Documentation](./TECHNICAL_DOCS.md)
+- Review the [Technical Documentation](./docs/TECHNICAL_DOCS.md)
 - Create an issue in the repository
 
 ---

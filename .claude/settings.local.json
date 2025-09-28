@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(tree:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git init:*)",
+      "Bash(git reset:*)",
+      "Bash(git commit:*)",
+      "Bash(npm install:*)",
+      "Bash(git push:*)",
+      "Bash(railway up:*)",
+      "Bash(railway status:*)",
+      "Bash(railway service:*)",
+      "Bash(dir:*)",
+      "Bash(timeout:*)",
+      "Bash(railway domain:*)",
+      "Bash(git remote add:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git branch:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

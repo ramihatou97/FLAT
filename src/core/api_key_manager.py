@@ -10,7 +10,7 @@ import json
 from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime, timedelta
 from enum import Enum
-import aioredis
+import redis.asyncio as aioredis
 from dataclasses import dataclass, asdict
 
 from .config import settings

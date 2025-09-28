@@ -11,7 +11,7 @@ import json
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta
 from collections import defaultdict, deque
-import aioredis
+import redis.asyncio as aioredis
 import asyncpg
 from sqlalchemy import text
 

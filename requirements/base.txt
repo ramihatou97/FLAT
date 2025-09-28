@@ -1,0 +1,81 @@
+# Core FastAPI Dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+websockets==12.0
+
+# Database & ORM
+sqlalchemy==2.0.23
+asyncpg==0.29.0
+alembic==1.12.1
+psycopg2-binary==2.9.9
+pgvector==0.2.5
+
+# Pydantic & Settings
+pydantic==2.5.0
+pydantic-settings==2.0.3
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# HTTP Client & Web Scraping
+aiohttp==3.9.1
+httpx==0.25.2
+requests==2.31.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+playwright==1.40.0
+
+# Caching & Background Tasks
+redis==5.0.1
+celery==5.3.4
+hiredis==2.2.3
+
+# AI & ML Libraries - Latest versions for production
+openai==1.51.0
+anthropic==0.34.2
+google-generativeai==0.8.1
+google-cloud-aiplatform==1.60.0
+# Note: Perplexity API access is via direct HTTP requests, no official package
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.4.2
+sentence-transformers==3.0.1  # Latest embedding models
+transformers==4.44.2  # Hugging Face transformers for local models
+torch==2.4.1  # PyTorch for ML operations
+
+# Document Processing
+PyPDF2==3.0.1
+python-docx==0.8.11
+python-pptx==0.6.23
+openpyxl==3.1.2
+
+# Medical & Scientific
+biopython==1.81
+pubmed-parser==0.3.1
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3
+click==8.1.7
+rich==13.7.0
+loguru==0.7.2
+
+
+# Production & Monitoring
+gunicorn==21.2.0
+prometheus-client==0.20.0  # Metrics collection
+psutil==5.9.8  # System monitoring
+watchdog==4.0.1  # File system monitoring
+APScheduler==3.10.4  # Background job scheduling
+
+# Email & Notifications
+email-validator==2.1.1
+emails==0.6
+slack-sdk==3.29.0  # Slack integration
+
+# Security & Rate Limiting
+slowapi==0.1.9  # Rate limiting
+python-dotenv==1.0.0  # Environment variable management
+cryptography==42.0.8  # Enhanced security

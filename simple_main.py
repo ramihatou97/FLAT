@@ -2,6 +2,7 @@
 
 import logging
 import asyncio
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -16,17 +17,10 @@ from src.services.semantic_search_engine import semantic_search_engine
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(
-    title="Medical Knowledge Platform",
-    version="3.0.0",
-    description="Personal medical encyclopedia with AI-powered content synthesis",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize critical neurosurgical platform services"""
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan manager"""
+    # Startup
     logger.info("🏥 Starting Neurosurgical Medical Knowledge Platform...")
 
     try:
@@ -44,9 +38,9 @@ async def startup_event():
         # Continue startup even if some services fail
         pass
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on application shutdown"""
+    yield
+
+    # Shutdown
     logger.info("🔄 Shutting down Neurosurgical Medical Platform...")
 
     try:
@@ -56,6 +50,15 @@ async def shutdown_event():
 
     except Exception as e:
         logger.error(f"Error during shutdown: {e}")
+
+app = FastAPI(
+    title="Medical Knowledge Platform",
+    version="3.0.0",
+    description="Personal medical encyclopedia with AI-powered content synthesis",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    lifespan=lifespan
+)
 
 # Middleware
 app.add_middleware(
