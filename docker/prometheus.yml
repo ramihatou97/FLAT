@@ -1,0 +1,78 @@
+# =============================================================================
+# Medical Knowledge Platform - Prometheus Monitoring Configuration
+# =============================================================================
+# Comprehensive monitoring setup for:
+# - Application health and performance
+# - Database metrics
+# - AI provider API usage
+# - System resources
+# =============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alerting rules (optional)
+rule_files:
+  # - "alert_rules.yml"
+
+# Alert manager configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+scrape_configs:
+  # Medical Platform Application Metrics
+  - job_name: 'medical-platform'
+    static_configs:
+      - targets: ['medical-platform:9090']
+    scrape_interval: 30s
+    metrics_path: '/api/monitoring/metrics'
+    scrape_timeout: 10s
+
+  # PostgreSQL Database Metrics
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    scrape_interval: 30s
+    metrics_path: '/metrics'
+    scrape_timeout: 10s
+
+  # Redis Cache Metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+    metrics_path: '/metrics'
+    scrape_timeout: 10s
+
+  # Nginx Reverse Proxy Metrics
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    scrape_interval: 30s
+    metrics_path: '/nginx_status'
+    scrape_timeout: 10s
+
+  # System Metrics (Node Exporter would be added here)
+  # - job_name: 'node-exporter'
+  #   static_configs:
+  #     - targets: ['node-exporter:9100']
+  #   scrape_interval: 30s
+
+  # Application Health Checks
+  - job_name: 'health-checks'
+    static_configs:
+      - targets: ['medical-platform:8000']
+    scrape_interval: 15s
+    metrics_path: '/api/health'
+    scrape_timeout: 5s
+
+# Storage configuration
+storage:
+  tsdb:
+    path: /prometheus
+    retention.time: 15d
+    retention.size: 10GB

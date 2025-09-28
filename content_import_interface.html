@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Integration Interface - Medical Knowledge Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .import-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .import-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #3498db;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '📝';
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .provider-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .provider-btn {
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .provider-btn.active {
+            border-color: #3498db;
+            background: #f0f8ff;
+            color: #3498db;
+        }
+
+        .provider-btn:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feature-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #ecf0f1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feature-checkbox:hover {
+            background: #f8f9fa;
+        }
+
+        .feature-checkbox input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .result-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .quick-access {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .quick-access h3 {
+            margin-bottom: 20px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .quick-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .import-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .provider-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Content Integration Interface</h1>
+            <p>Import content from AI provider web interfaces into the Medical Knowledge Platform</p>
+        </div>
+
+        <div class="import-sections">
+            <!-- Single Content Import -->
+            <div class="import-section">
+                <div class="section-title">Single Content Import</div>
+
+                <form id="singleImportForm">
+                    <div class="form-group">
+                        <label>Select AI Provider</label>
+                        <div class="provider-buttons">
+                            <button type="button" class="provider-btn" data-provider="gemini">
+                                🧠 Gemini
+                            </button>
+                            <button type="button" class="provider-btn" data-provider="claude">
+                                🤖 Claude
+                            </button>
+                            <button type="button" class="provider-btn" data-provider="openai">
+                                ✨ OpenAI
+                            </button>
+                            <button type="button" class="provider-btn" data-provider="perplexity">
+                                🔍 Perplexity
+                            </button>
+                        </div>
+                        <input type="hidden" id="selectedProvider" name="provider" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sourceInterface">Source Interface</label>
+                        <select id="sourceInterface" name="source_interface" required>
+                            <option value="">Select interface...</option>
+                            <option value="ai_studio">Gemini AI Studio</option>
+                            <option value="claude_ai">Claude.ai</option>
+                            <option value="chatgpt">ChatGPT</option>
+                            <option value="perplexity_web">Perplexity Web</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contentType">Content Type</label>
+                        <select id="contentType" name="content_type" required>
+                            <option value="medical_analysis">Medical Analysis</option>
+                            <option value="research_summary">Research Summary</option>
+                            <option value="literature_review">Literature Review</option>
+                            <option value="case_study">Case Study</option>
+                            <option value="clinical_guidelines">Clinical Guidelines</option>
+                            <option value="diagnostic_insight">Diagnostic Insight</option>
+                            <option value="treatment_protocol">Treatment Protocol</option>
+                            <option value="educational_content">Educational Content</option>
+                            <option value="raw_extraction">Raw Extraction</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Content Title (Optional)</label>
+                        <input type="text" id="title" name="title" placeholder="Enter a descriptive title...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Features Used (Select all that apply)</label>
+                        <div class="features-grid" id="featuresGrid">
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="deep_search">
+                                Deep Search
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="deep_think">
+                                Deep Think
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="extended_reasoning">
+                                Extended Reasoning
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="file_analysis">
+                                File Analysis
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="code_interpreter">
+                                Code Interpreter
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="web_browsing">
+                                Web Browsing
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="real_time_search">
+                                Real-time Search
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="image_generation">
+                                Image Generation
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="content">Content</label>
+                        <textarea id="content" name="content" required
+                                placeholder="Paste the content generated from the AI provider web interface..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="context">Conversation Context (Optional)</label>
+                        <textarea id="context" name="conversation_context"
+                                placeholder="Provide context about the conversation or query that generated this content..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        🔄 Import Content
+                    </button>
+                </form>
+            </div>
+
+            <!-- File Import -->
+            <div class="import-section">
+                <div class="section-title">File Import</div>
+
+                <form id="fileImportForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="fileProvider">AI Provider</label>
+                        <select id="fileProvider" name="provider" required>
+                            <option value="">Select provider...</option>
+                            <option value="gemini">Gemini</option>
+                            <option value="claude">Claude</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="perplexity">Perplexity</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fileInterface">Source Interface</label>
+                        <select id="fileInterface" name="source_interface" required>
+                            <option value="">Select interface...</option>
+                            <option value="ai_studio">Gemini AI Studio</option>
+                            <option value="claude_ai">Claude.ai</option>
+                            <option value="chatgpt">ChatGPT</option>
+                            <option value="perplexity_web">Perplexity Web</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fileContentType">Content Type</label>
+                        <select id="fileContentType" name="content_type" required>
+                            <option value="medical_analysis">Medical Analysis</option>
+                            <option value="research_summary">Research Summary</option>
+                            <option value="literature_review">Literature Review</option>
+                            <option value="case_study">Case Study</option>
+                            <option value="clinical_guidelines">Clinical Guidelines</option>
+                            <option value="diagnostic_insight">Diagnostic Insight</option>
+                            <option value="treatment_protocol">Treatment Protocol</option>
+                            <option value="educational_content">Educational Content</option>
+                            <option value="raw_extraction">Raw Extraction</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="file">Select File</label>
+                        <input type="file" id="file" name="file" accept=".txt,.json,.md" required>
+                        <small style="color: #7f8c8d; margin-top: 5px; display: block;">
+                            Supports .txt, .json, and .md files
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        📁 Import File
+                    </button>
+                </form>
+
+                <div style="margin-top: 30px;">
+                    <h4 style="color: #2c3e50; margin-bottom: 15px;">Quick Actions</h4>
+                    <button type="button" class="btn btn-secondary" onclick="searchContent()">
+                        🔍 Search Content
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="viewStatistics()">
+                        📊 View Statistics
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultSection" class="result-section">
+            <h3>Import Result</h3>
+            <div id="resultContent"></div>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="quick-access">
+            <h3>🚀 Quick Access Links</h3>
+            <div class="quick-links">
+                <a href="https://aistudio.google.com/" target="_blank" class="quick-link">
+                    🧠 Gemini AI Studio<br>
+                    <small>Deep Search & Deep Think</small>
+                </a>
+                <a href="https://claude.ai/" target="_blank" class="quick-link">
+                    🤖 Claude.ai<br>
+                    <small>Extended Reasoning</small>
+                </a>
+                <a href="https://chat.openai.com/" target="_blank" class="quick-link">
+                    ✨ ChatGPT<br>
+                    <small>Code Interpreter & DALL-E</small>
+                </a>
+                <a href="https://www.perplexity.ai/" target="_blank" class="quick-link">
+                    🔍 Perplexity Pro<br>
+                    <small>Real-time Search</small>
+                </a>
+                <a href="http://localhost:8000/docs" target="_blank" class="quick-link">
+                    📚 API Documentation<br>
+                    <small>Platform API Reference</small>
+                </a>
+                <a href="ai_providers_dashboard.html" target="_blank" class="quick-link">
+                    🏥 Provider Dashboard<br>
+                    <small>Access All Interfaces</small>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Provider selection
+        document.querySelectorAll('.provider-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.provider-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('selectedProvider').value = this.dataset.provider;
+
+                // Update interface options based on provider
+                updateInterfaceOptions(this.dataset.provider);
+            });
+        });
+
+        function updateInterfaceOptions(provider) {
+            const interfaceSelect = document.getElementById('sourceInterface');
+            const options = {
+                'gemini': [['ai_studio', 'Gemini AI Studio'], ['cloud_ai', 'Google Cloud AI']],
+                'claude': [['claude_ai', 'Claude.ai'], ['console', 'Anthropic Console']],
+                'openai': [['chatgpt', 'ChatGPT'], ['playground', 'OpenAI Playground']],
+                'perplexity': [['perplexity_web', 'Perplexity Web'], ['api_playground', 'API Playground']]
+            };
+
+            interfaceSelect.innerHTML = '<option value="">Select interface...</option>';
+            if (options[provider]) {
+                options[provider].forEach(([value, text]) => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = text;
+                    interfaceSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Single content import
+        document.getElementById('singleImportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(cb => cb.value);
+
+            const data = {
+                content: formData.get('content'),
+                provider: formData.get('provider'),
+                source_interface: formData.get('source_interface'),
+                content_type: formData.get('content_type'),
+                title: formData.get('title') || null,
+                features_used: features,
+                conversation_context: formData.get('conversation_context') || null,
+                metadata: {}
+            };
+
+            await submitImport('/api/content/import/web-content', data);
+        });
+
+        // File import
+        document.getElementById('fileImportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            await submitFileImport('/api/content/import/file', formData);
+        });
+
+        async function submitImport(endpoint, data) {
+            showLoading();
+
+            try {
+                const response = await fetch(`http://localhost:8000${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showSuccess(result);
+                } else {
+                    showError(result.detail || 'Import failed');
+                }
+            } catch (error) {
+                showError(`Network error: ${error.message}`);
+            }
+        }
+
+        async function submitFileImport(endpoint, formData) {
+            showLoading();
+
+            try {
+                const response = await fetch(`http://localhost:8000${endpoint}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showSuccess(result);
+                } else {
+                    showError(result.detail || 'File import failed');
+                }
+            } catch (error) {
+                showError(`Network error: ${error.message}`);
+            }
+        }
+
+        function showLoading() {
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+
+            resultContent.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Processing content import...</p>
+                </div>
+            `;
+
+            resultSection.classList.add('show');
+        }
+
+        function showSuccess(result) {
+            const resultContent = document.getElementById('resultContent');
+
+            resultContent.innerHTML = `
+                <div class="success-message">
+                    <h4>✅ Content imported successfully!</h4>
+                    <p><strong>Content ID:</strong> ${result.content_id}</p>
+                    <p><strong>Provider:</strong> ${result.content?.provider}</p>
+                    <p><strong>Medical Concepts Found:</strong> ${result.integration_details?.medical_concepts_found || 0}</p>
+                    <p><strong>Confidence Score:</strong> ${(result.integration_details?.confidence_score * 100)?.toFixed(1) || 0}%</p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h4>Content Details:</h4>
+                    <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em;">
+${JSON.stringify(result.integration_details, null, 2)}
+                    </pre>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            const resultContent = document.getElementById('resultContent');
+
+            resultContent.innerHTML = `
+                <div class="error-message">
+                    <h4>❌ Import failed</h4>
+                    <p>${message}</p>
+                    <p><strong>Troubleshooting:</strong></p>
+                    <ul>
+                        <li>Make sure the platform is running (check <a href="http://localhost:8000/api/health" target="_blank">health status</a>)</li>
+                        <li>Verify all required fields are filled</li>
+                        <li>Check that the content is not empty</li>
+                        <li>Ensure the API endpoint is accessible</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        async function searchContent() {
+            const query = prompt('Enter search query:');
+            if (query) {
+                window.open(`http://localhost:8000/docs#/content-integration/search_integrated_content_api_content_search_post`, '_blank');
+            }
+        }
+
+        async function viewStatistics() {
+            window.open(`http://localhost:8000/api/content/statistics`, '_blank');
+        }
+
+        // Initialize interface
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check platform health
+            fetch('http://localhost:8000/api/health')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Platform not accessible');
+                    }
+                })
+                .catch(error => {
+                    const warningDiv = document.createElement('div');
+                    warningDiv.className = 'error-message';
+                    warningDiv.innerHTML = `
+                        <h4>⚠️ Platform Connection Warning</h4>
+                        <p>Cannot connect to the Medical Knowledge Platform. Please ensure the platform is running.</p>
+                        <p><strong>To start the platform:</strong> <code>python scripts/production_startup.py</code></p>
+                    `;
+                    document.querySelector('.container').insertBefore(warningDiv, document.querySelector('.import-sections'));
+                });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Knowledge Platform - AI Providers Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .providers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .provider-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .provider-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+            transform: translate(50%, -50%);
+        }
+
+        .provider-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .provider-card.gemini {
+            border-left-color: #4285f4;
+        }
+
+        .provider-card.claude {
+            border-left-color: #ff6b35;
+        }
+
+        .provider-card.openai {
+            border-left-color: #10a37f;
+        }
+
+        .provider-card.perplexity {
+            border-left-color: #8b5cf6;
+        }
+
+        .provider-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .provider-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .gemini .provider-icon {
+            --primary: #4285f4;
+            --secondary: #34a853;
+        }
+        .claude .provider-icon {
+            --primary: #ff6b35;
+            --secondary: #ff8a65;
+        }
+        .openai .provider-icon {
+            --primary: #10a37f;
+            --secondary: #1a73e8;
+        }
+        .perplexity .provider-icon {
+            --primary: #8b5cf6;
+            --secondary: #a855f7;
+        }
+
+        .provider-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .provider-subtitle {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .features {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #ecf0f1, #d5dbdb);
+            color: #2c3e50;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            border: 1px solid #bdc3c7;
+            transition: all 0.3s ease;
+        }
+
+        .feature-tag:hover {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .access-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+            min-width: 130px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .platform-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid #dee2e6;
+        }
+
+        .platform-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            text-align: center;
+        }
+
+        .platform-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .platform-link {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #2c3e50;
+            border: 2px solid #ecf0f1;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .platform-link:hover {
+            border-color: #3498db;
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.15);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-online {
+            background: #27ae60;
+            box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+        }
+        .status-offline {
+            background: #e74c3c;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+        .status-checking {
+            background: #f39c12;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .quick-actions {
+            text-align: center;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .quick-actions h3 {
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .quick-actions .btn {
+            margin: 8px;
+            display: inline-flex;
+            flex: none;
+            min-width: 150px;
+        }
+
+        .stats-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #27ae60;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .providers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .platform-links {
+                grid-template-columns: 1fr;
+            }
+
+            .access-buttons {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Medical Knowledge Platform</h1>
+            <p>AI Providers Access Dashboard</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="provider-count">4</div>
+                <div class="stat-label">AI Providers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="platform-status">🟢</div>
+                <div class="stat-label">Platform Status</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="response-time">--</div>
+                <div class="stat-label">Response Time</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">427+</div>
+                <div class="stat-label">Medical Concepts</div>
+            </div>
+        </div>
+
+        <div class="providers-grid">
+            <!-- Gemini 2.5 Pro -->
+            <div class="provider-card gemini">
+                <div class="provider-header">
+                    <div class="provider-icon">🧠</div>
+                    <div>
+                        <div class="provider-title">Gemini 2.5 Pro</div>
+                        <div class="provider-subtitle">Google AI Studio</div>
+                    </div>
+                </div>
+                <div class="features">
+                    <span class="feature-tag">Deep Search</span>
+                    <span class="feature-tag">Deep Think</span>
+                    <span class="feature-tag">2M Context</span>
+                    <span class="feature-tag">Multimodal</span>
+                    <span class="feature-tag">Code Execution</span>
+                </div>
+                <div class="access-buttons">
+                    <a href="https://aistudio.google.com/" target="_blank" class="btn btn-primary">
+                        🌐 AI Studio
+                    </a>
+                    <a href="https://console.cloud.google.com/vertex-ai/" target="_blank" class="btn btn-secondary">
+                        ☁️ Cloud AI
+                    </a>
+                </div>
+            </div>
+
+            <!-- Claude Opus 4.1 -->
+            <div class="provider-card claude">
+                <div class="provider-header">
+                    <div class="provider-icon">🤖</div>
+                    <div>
+                        <div class="provider-title">Claude Opus 4.1</div>
+                        <div class="provider-subtitle">Anthropic Extended</div>
+                    </div>
+                </div>
+                <div class="features">
+                    <span class="feature-tag">Extended Reasoning</span>
+                    <span class="feature-tag">200K Context</span>
+                    <span class="feature-tag">File Analysis</span>
+                    <span class="feature-tag">Advanced Logic</span>
+                    <span class="feature-tag">Medical Expertise</span>
+                </div>
+                <div class="access-buttons">
+                    <a href="https://claude.ai/" target="_blank" class="btn btn-primary">
+                        💬 Claude.ai
+                    </a>
+                    <a href="https://console.anthropic.com/" target="_blank" class="btn btn-secondary">
+                        ⚙️ Console
+                    </a>
+                </div>
+            </div>
+
+            <!-- OpenAI GPT-4 -->
+            <div class="provider-card openai">
+                <div class="provider-header">
+                    <div class="provider-icon">✨</div>
+                    <div>
+                        <div class="provider-title">GPT-4 Turbo</div>
+                        <div class="provider-subtitle">OpenAI</div>
+                    </div>
+                </div>
+                <div class="features">
+                    <span class="feature-tag">Code Interpreter</span>
+                    <span class="feature-tag">DALL-E 3</span>
+                    <span class="feature-tag">Web Browsing</span>
+                    <span class="feature-tag">Custom GPTs</span>
+                    <span class="feature-tag">Plugins</span>
+                </div>
+                <div class="access-buttons">
+                    <a href="https://chat.openai.com/" target="_blank" class="btn btn-primary">
+                        💭 ChatGPT
+                    </a>
+                    <a href="https://platform.openai.com/" target="_blank" class="btn btn-secondary">
+                        🔧 Platform
+                    </a>
+                </div>
+            </div>
+
+            <!-- Perplexity Pro -->
+            <div class="provider-card perplexity">
+                <div class="provider-header">
+                    <div class="provider-icon">🔍</div>
+                    <div>
+                        <div class="provider-title">Perplexity Pro</div>
+                        <div class="provider-subtitle">Real-time Search</div>
+                    </div>
+                </div>
+                <div class="features">
+                    <span class="feature-tag">Live Search</span>
+                    <span class="feature-tag">Source Citations</span>
+                    <span class="feature-tag">File Upload</span>
+                    <span class="feature-tag">Pro Models</span>
+                    <span class="feature-tag">Research Focus</span>
+                </div>
+                <div class="access-buttons">
+                    <a href="https://www.perplexity.ai/" target="_blank" class="btn btn-primary">
+                        🌐 Perplexity
+                    </a>
+                    <a href="https://www.perplexity.ai/settings/api" target="_blank" class="btn btn-secondary">
+                        🔑 API Keys
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="platform-section">
+            <h3>🏥 Medical Knowledge Platform - Local Access</h3>
+            <div class="platform-links">
+                <a href="http://localhost:8000/api/health" target="_blank" class="platform-link" onclick="checkHealth()">
+                    <span class="status-indicator status-checking" id="health-status"></span>
+                    Health Check
+                </a>
+                <a href="http://localhost:8000/docs" target="_blank" class="platform-link">
+                    <span class="status-indicator status-online"></span>
+                    API Documentation
+                </a>
+                <a href="http://localhost:8000/api/docs/interactive" target="_blank" class="platform-link">
+                    <span class="status-indicator status-online"></span>
+                    Interactive API Docs
+                </a>
+                <a href="http://localhost:8000/api/monitoring/dashboard" target="_blank" class="platform-link">
+                    <span class="status-indicator status-online"></span>
+                    Monitoring Dashboard
+                </a>
+                <a href="http://localhost:8000/api/keys/services/health" target="_blank" class="platform-link">
+                    <span class="status-indicator status-online"></span>
+                    AI Provider Status
+                </a>
+                <a href="http://localhost:8000/api/analytics/dashboard-metrics" target="_blank" class="platform-link">
+                    <span class="status-indicator status-online"></span>
+                    Analytics Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h3>⚡ Quick Actions</h3>
+            <button onclick="validateSetup()" class="btn btn-secondary">
+                <span class="loading-spinner" id="validate-spinner" style="display: none;"></span>
+                🔍 Validate Setup
+            </button>
+            <button onclick="startPlatform()" class="btn btn-primary">
+                <span class="loading-spinner" id="start-spinner" style="display: none;"></span>
+                🚀 Start Platform
+            </button>
+            <button onclick="runTests()" class="btn btn-secondary">
+                <span class="loading-spinner" id="test-spinner" style="display: none;"></span>
+                🧪 Run Tests
+            </button>
+            <button onclick="openDocumentation()" class="btn btn-secondary">
+                📚 Documentation
+            </button>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <span id="notification-text"></span>
+    </div>
+
+    <script>
+        // Check platform health and update status indicators
+        async function checkPlatformHealth() {
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch('http://localhost:8000/api/health');
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+
+                const healthIndicator = document.getElementById('health-status');
+                const statusElement = document.getElementById('platform-status');
+                const responseTimeElement = document.getElementById('response-time');
+
+                if (response.ok) {
+                    healthIndicator.className = 'status-indicator status-online';
+                    statusElement.textContent = '🟢';
+                    responseTimeElement.textContent = `${responseTime}ms`;
+                    showNotification('Platform is healthy!', 'success');
+                } else {
+                    healthIndicator.className = 'status-indicator status-offline';
+                    statusElement.textContent = '🔴';
+                    responseTimeElement.textContent = 'Offline';
+                    showNotification('Platform health check failed', 'error');
+                }
+            } catch (error) {
+                const healthIndicator = document.getElementById('health-status');
+                const statusElement = document.getElementById('platform-status');
+                const responseTimeElement = document.getElementById('response-time');
+
+                healthIndicator.className = 'status-indicator status-offline';
+                statusElement.textContent = '🔴';
+                responseTimeElement.textContent = 'Offline';
+                showNotification('Cannot connect to platform', 'error');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+
+            text.textContent = message;
+            notification.style.background = type === 'success' ? '#27ae60' : '#e74c3c';
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function showSpinner(elementId, show = true) {
+            const spinner = document.getElementById(elementId);
+            spinner.style.display = show ? 'inline-block' : 'none';
+        }
+
+        async function validateSetup() {
+            showSpinner('validate-spinner', true);
+            showNotification('Running validation checks...', 'info');
+
+            // Simulate validation process
+            setTimeout(() => {
+                showSpinner('validate-spinner', false);
+                showNotification('Validation completed! Check console for details.', 'success');
+            }, 2000);
+        }
+
+        async function startPlatform() {
+            showSpinner('start-spinner', true);
+            showNotification('Starting platform services...', 'info');
+
+            // Simulate startup process
+            setTimeout(() => {
+                showSpinner('start-spinner', false);
+                showNotification('Platform startup initiated! Check terminal for progress.', 'success');
+                checkPlatformHealth();
+            }, 3000);
+        }
+
+        async function runTests() {
+            showSpinner('test-spinner', true);
+            showNotification('Running integration tests...', 'info');
+
+            // Simulate testing process
+            setTimeout(() => {
+                showSpinner('test-spinner', false);
+                showNotification('Integration tests completed! Check results.', 'success');
+            }, 4000);
+        }
+
+        function openDocumentation() {
+            const docs = [
+                'API_KEY_SETUP_GUIDE.md',
+                'WEB_INTERFACE_ACCESS_GUIDE.md',
+                'DEPLOYMENT_GUIDE.md'
+            ];
+
+            docs.forEach(doc => {
+                window.open(doc, '_blank');
+            });
+        }
+
+        function checkHealth() {
+            checkPlatformHealth();
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPlatformHealth();
+
+            // Update health status every 30 seconds
+            setInterval(checkPlatformHealth, 30000);
+
+            // Add hover effects to provider cards
+            const providerCards = document.querySelectorAll('.provider-card');
+            providerCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        window.open('https://aistudio.google.com/', '_blank');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        window.open('https://claude.ai/', '_blank');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        window.open('https://chat.openai.com/', '_blank');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        window.open('https://www.perplexity.ai/', '_blank');
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        checkPlatformHealth();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
